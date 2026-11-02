@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Asteroid Data Visualizer</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/layout.js" defer></script>
+  <script src="/design.js" defer></script>
+  <script src="/palettes.js" defer></script>
+  <script src="/export.js" defer></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+<main>
+  <header><p class="eyebrow">NASA NEAR-EARTH OBJECTS · JAVA EDITION</p><h1>Asteroid Data Visualizer</h1>
+    <p class="intro">Explore NASA NeoWs data for reported close approaches to Earth on your selected date. Each circle represents an asteroid; its size reflects the midpoint of NASA’s estimated diameter range.</p>
+    <p class="intro">In <strong>Layered</strong> view, the largest circles sit behind the smallest, and the gap from each circle’s bottom edge to the blue horizon represents miss distance. <strong>Linear</strong> view spreads circles horizontally by identity, using the same bottom-to-horizon distance encoding with its own scale—not actual sky positions.</p>
+    <p class="fine">Colours are artistic choices, not hazard ratings. Sizes and distances are scaled independently within each date: this is an illustrative comparison, not true scale, an orbit simulation or a prediction of impact. Demo mode uses synthetic examples.</p>
+  </header>
+  <form id="query" class="controls">
+    <div><label for="date">Approach date (UTC)</label><input type="date" id="date" name="date" required></div>
+    <label class="check"><input type="checkbox" id="demo"> Use synthetic demo data</label>
+    <button type="submit" id="load">Explore date <span aria-hidden="true">↗</span></button>
+  </form>
+  <p id="status" role="status" aria-live="polite">Choose a date, then select Explore date.</p>
+  <section id="results" hidden>
+    <div class="section-heading"><div><p id="source" class="eyebrow"></p><h2 id="summary">Close approaches</h2></div><span id="result-date" class="badge"></span></div>
+    <div class="section-heading view-controls"><label for="view-mode">Visualization</label><select id="view-mode"><option value="linear">Linear</option><option value="layered">Layered · largest at back</option></select></div>
+    <fieldset class="design-controls"><legend>Design your image</legend>
+      <div><label for="palette">Asteroid colours</label><select id="palette"><option value="curated">Curated · 317 colours</option><option value="original">Original · 6 colours</option></select></div>
+      <div><label for="outline">Asteroid border</label><select id="outline"><option value="white">White</option><option value="black">Black</option><option value="none">None</option></select></div>
+      <div><label for="background-preset">Background</label><select id="background-preset"><option value="#101927">Original navy</option><option value="#251a21">Deep purple</option><option value="#0f0d25">Dark blue</option><option value="#ffffff">White</option><option value="#000000">Black</option><option value="custom">Custom colour</option></select></div>
+      <div><label for="background-color">Custom background colour</label><input id="background-color" type="color" value="#101927"></div>
+      <p class="fine">Changes apply immediately to either view. The Earth horizon stays blue.</p>
+    </fieldset>
+    <div class="download-controls"><button id="download-png" type="button" disabled>Download PNG</button><p id="download-status" class="fine" role="status" aria-live="polite">Exports the current visualization at 2× display resolution.</p></div>
+    <div class="visual-card">
+      <canvas id="visual" role="img" aria-label="Illustrative comparison of asteroid diameters and miss distances. Full values are available in the table below."></canvas>
+      <div class="legend"><span><i class="dot"></i> Circle size: estimated diameter midpoint</span><span>Bottom-to-horizon gap: miss distance</span></div>
+      <p id="view-description" class="fine">Linear: objects are spread horizontally.</p>
+      <p class="fine">Illustrative, not to scale. Sizes and distances are scaled independently for this date. This is not an orbit simulation or a prediction of impact. Horizontal positions are for layout only.</p>
+    </div>
+    <div class="section-heading table-heading"><h2>Explore the numbers</h2><div><label for="sort">Sort by</label><select id="sort"><option value="missDistanceKm:asc">Closest first</option><option value="diameterM:desc">Largest first</option><option value="diameterM:asc">Smallest first</option><option value="name:asc">Name A–Z</option><option value="velocityKmS:desc">Fastest first</option></select></div></div>
+    <p class="fine">Diameter is an estimate: the midpoint and original range are shown. A potentially hazardous classification does not mean a collision is predicted. A dash means data is unavailable.</p>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Asteroid data table; scroll horizontally for all columns"><table><caption class="sr-only">Asteroid close approaches for the selected date</caption><thead><tr><th scope="col">Asteroid</th><th scope="col">Diameter midpoint<br><span>metres</span></th><th scope="col">Estimated range<br><span>metres</span></th><th scope="col">Miss distance<br><span>kilometres</span></th><th scope="col">Relative speed<br><span>km/s</span></th><th scope="col">Potentially<br>hazardous</th></tr></thead><tbody id="rows"></tbody></table></div>
+  </section>
+  <footer>Built with Spring Boot · Data from NASA NeoWs · No wallet required</footer>
+</main>
+</body>
+</html>
